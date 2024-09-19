@@ -13,12 +13,12 @@ class RubiksCube:
     size = 3
     face_facets = size ** 2
     colors_map = {
-        "b": "blue",
-        "r": "red",
-        "o": "orange",
-        "g": "green",
-        "w": "white",
-        "y": "yellow"
+        "B": "blue",
+        "R": "red",
+        "O": "orange",
+        "G": "green",
+        "W": "white",
+        "Y": "yellow"
     }
     
     faces = ["front", "right", "left", "back", "upper", "down"]
@@ -35,7 +35,7 @@ class RubiksCube:
         print("With blue face towards you, flip the cube up and down to read upper and down faces")
         for i in range(len(self.faces)):
             while True:
-                user_input = input(f"Enter face color when {self.existing_colors[i]} facet is in center: ").lower()
+                user_input = input(f"Enter face color when {self.existing_colors[i]} facet is in center: ").upper()
                 # Check if the number of inputs is correct, and if characters are in the list
                 if len(user_input) == self.face_facets and all(char in self.colors_map.keys() for char in user_input):
                     self.face_colors[self.faces[i]] = user_input
@@ -46,7 +46,7 @@ class RubiksCube:
     # Show
     def show_cube(self):
         cube_colors = "".join(self.face_colors[self.faces[i]] for i in [4, 1, 0, 2, 3, 5])
-        print(Cube(self.size, cube_colors.upper()))
+        print(Cube(self.size, cube_colors))
 
 cube1 = RubiksCube()
 cube1.set_colors()
