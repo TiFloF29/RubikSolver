@@ -10,32 +10,31 @@ from magiccube import Cube # Module able to print a cube in 2D with its colors
 
 # Define the Rubik's Cube as an object
 class RubiksCube:
-    size = 3
-    face_facets = size ** 2
-    colors_map = {
-        "B": "blue",
-        "O": "orange",
-        "R": "red",
-        "G": "green",
-        "W": "white",
-        "Y": "yellow"
-    }
-    
-    # What the cube should look like
-    target_colors = {
-        "front": "B" * 9,
-        "right": "R" * 9,
-        "left": "O" * 9,
-        "back": "G" * 9,
-        "upper": "W" * 9,
-        "down": "Y" * 9
-    }
-    
-    faces = ["front", "right", "left", "back", "upper", "down"]
-    existing_colors = list(colors_map.values())
-    
+
     def __init__(self) -> None:
-        pass
+        self.size = 3
+        self.face_facets = self.size ** 2
+        self.colors_map = {
+            "B": "blue",
+            "R": "red",
+            "O": "orange",
+            "G": "green",
+            "W": "white",
+            "Y": "yellow"
+        }
+        
+        # What the cube should look like
+        self.target_colors = {
+            "front": "B" * 9,
+            "right": "R" * 9,
+            "left": "O" * 9,
+            "back": "G" * 9,
+            "upper": "W" * 9,
+            "down": "Y" * 9
+        }
+        
+        self.faces = ["front", "right", "left", "back", "upper", "down"]
+        self.existing_colors = list(self.colors_map.values())
 
     # Ask the user to enter the colors on each face
     def set_colors(self):
@@ -53,30 +52,30 @@ class RubiksCube:
                 else:
                     print(f"Only use characters from {self.colors_map.keys()} on {self.face_facets} characters")
         # Keep in store the initial state
+        self.now = self.inline_colors(self.now)
         self.initial_colors = self.now
+    
+    # Convert the faces colors into a unique string
+    def inline_colors(self, color_dict):
+        return "".join(color_dict[self.faces[i]] for i in [4, 1, 0, 2, 3, 5])
     
     # Show the version of the cube we want (initial, target, now)
     def show_cube(self, version):
-        what_version = getattr(self, version)
-        cube_colors = "".join(what_version[self.faces[i]] for i in [4, 2, 0, 1, 3, 5])
-        print(Cube(self.size, cube_colors))
+        print(Cube(self.size, version))
 
     def rotate_clockwise(self, face):
-        permutation = [6, 3, 0, 7, 4, 1, 8, 5, 2] # Permutation order of the face
-        self.now[face] = "".join(self.now[face][i] for i in permutation)
-        # Need to add adjacent cells behavior
+        pass
 
     def rotate_counterclockwise(self, face):
-        permutation = [2, 5, 8, 1, 4, 7, 0, 3, 6] # Permutation order of the face
-        self.now[face] = "".join(self.now[face][i] for i in permutation)
-        # Need to add adjacent cells behavior
+        pass
 
 cube1 = RubiksCube()
 cube1.set_colors()
-print("Target:")
-cube1.show_cube("target_colors")
+print("\nTarget:")
+cube1.show_cube(cube1.inline_colors(cube1.target_colors))
 print("Initial state of the cube:")
-cube1.show_cube("initial_colors")
+cube1.show_cube(cube1.initial_colors)
 cube1.rotate_clockwise("front")
 cube1.rotate_counterclockwise("upper")
-cube1.show_cube("now")
+print("Current state:")
+cube1.show_cube(cube1.now)
