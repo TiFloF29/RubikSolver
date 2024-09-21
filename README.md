@@ -36,3 +36,15 @@ This first version is 100% command lines. You need to enter all the colors of yo
 >    4   5   6
 >    7   8   9
 >```
+
+### Cube's representations
+
+In order to facilitate face rotation computation, I opted for a numerical representation of the cube:
+
+![Numbers of the Rubik's Cube](./2D_Cube_Numbers.png)
+
+That way, I am able to list all the adjacent cells, so none are forgotten during face rotation:
+
+![Adjacent Cells](./Adjacent_Cells.png)
+
+Now a face rotation will be computed as a characters permutation depending on what face is involved.
