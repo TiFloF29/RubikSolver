@@ -22,7 +22,6 @@ class RubiksCube:
             "W": "white",
             "Y": "yellow"
         }
-        
         # What the cube should look like
         self.target_colors = {
             "front": "B" * 9,
@@ -32,13 +31,52 @@ class RubiksCube:
             "upper": "W" * 9,
             "down": "Y" * 9
         }
-        
+        # Name of the faces
         self.faces = ["front", "right", "left", "back", "upper", "down"]
+        # Location of corners
+        self.corners = {
+            0: [0,9,38],
+            1: [2,29,36],
+            2: [6,11,18],
+            3: [8,20,27],
+            4: [15,44,51],
+            5: [17,24,45],
+            6: [26,33,47],
+            7: [35,42,53]
+        }
+        # Location of edges
+        self.edges = {
+            0:  [1,37],
+            1:  [3,10],
+            2:  [5,28],
+            3:  [7,19],
+            4:  [12,41],
+            5:  [14,21],
+            6:  [16,48],
+            7:  [23,30],
+            8:  [25,46],
+            9:  [32,39],
+            10: [34,50],
+            11: [43,52]
+        }
+        # Color characters
+        self.color_char = self.colors_map.keys()
+        # List of colors
         self.existing_colors = list(self.colors_map.values())
+        # Inline string for target_colors
+        self.inline_target_colors = self.inline_colors(self.target_colors)
+        # Inline facet index
+        self.inline_target_numbers = list(range(54))
+
+    def get_corners_colors(self):
+        pass
+    
+    def get_edges_colors(self):
+        pass
 
     # Ask the user to enter the colors on each face
     def set_colors(self):
-        self.now = {}
+        self.now_colors = {}
         print("White face should be on top, and blue face towards the user")
         print("Colors should be entered from top-left to bottom-right")
         print("With blue face towards you, flip the cube up and down to read upper and down faces")
@@ -46,20 +84,20 @@ class RubiksCube:
             while True:
                 user_input = input(f"Enter face color when {self.existing_colors[i]} facet is in center: ").upper()
                 # Check if the number of inputs is correct, and if characters are in the list
-                if len(user_input) == self.face_facets and all(char in self.colors_map.keys() for char in user_input):
-                    self.now[self.faces[i]] = user_input
+                if len(user_input) == self.face_facets and all(char in self.color_char for char in user_input):
+                    self.now_colors[self.faces[i]] = user_input
                     break
                 else:
-                    print(f"Only use characters from {self.colors_map.keys()} on {self.face_facets} characters")
+                    print(f"Only use characters from {self.color_char} on {self.face_facets} characters")
         # Keep in store the initial state
-        self.now = self.inline_colors(self.now)
-        self.initial_colors = self.now
+        self.now_colors = self.inline_colors(self.now_colors)
+        self.initial_colors = self.now_colors
     
     # Convert the faces colors into a unique string
     def inline_colors(self, color_dict):
         return "".join(color_dict[self.faces[i]] for i in [4, 1, 0, 2, 3, 5])
     
-    # Show the version of the cube we want (initial, target, now)
+    # Show the version of the cube we want (initial, target, now_colors)
     def show_cube(self, version):
         print(Cube(self.size, version))
 
@@ -74,11 +112,11 @@ class RubiksCube:
         elif face == "upper":
             permutation = [6, 3, 0, 7, 4, 1, 8, 5, 2, 20, 19, 18] + list(range(12,18)) + \
                 [27, 28, 29] + list(range(21,27)) + [36, 37, 38] + list(range(30,36)) + \
-                [11, 10, 9] + list(range(39,54))
+                [9, 10, 11] + list(range(39,54))
         
         elif face == "right":
             permutation = [38, 1, 2, 41, 4, 5, 44, 7, 8, 15, 12, 9, 16,\
-                13, 10, 17, 14, 11, 6, 18, 20, 3, 22, 23, 0] + list(range(25,38)) +\
+                13, 10, 17, 14, 11, 0, 18, 20, 3, 22, 23, 6] + list(range(25,38)) +\
                 [51, 39, 40, 48, 42, 43, 45, 18, 46, 47, 2, 49, 50, 24, 52, 53]
         
         elif face == "left":
@@ -97,7 +135,7 @@ class RubiksCube:
                 [33, 34, 35, 51, 48, 45, 52, 49, 46, 53, 50, 47]
         
         # Apply the modifications
-        self.now = "".join(self.now[i] for i in permutation)
+        self.now_colors = "".join(self.now_colors[i] for i in permutation)
 
     def rotate_counterclockwise(self, face):
         # A counterclockwise is simply 3 clockwise rotations
@@ -107,10 +145,10 @@ class RubiksCube:
 cube1 = RubiksCube()
 cube1.set_colors()
 print("\nTarget:")
-cube1.show_cube(cube1.inline_colors(cube1.target_colors))
+cube1.show_cube(cube1.inline_target_colors)
 print("Initial state of the cube:")
 cube1.show_cube(cube1.initial_colors)
 cube1.rotate_clockwise("down")
-#cube1.rotate_counterclockwise("front")
+cube1.rotate_counterclockwise("front")
 print("Current state:")
-cube1.show_cube(cube1.now)
+cube1.show_cube(cube1.now_colors)
