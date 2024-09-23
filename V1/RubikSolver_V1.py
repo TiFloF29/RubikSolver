@@ -67,14 +67,12 @@ class RubiksCube:
         self.inline_target_colors = self.inline_colors(self.target_colors)
         # Inline facet index
         self.inline_target_numbers = list(range(54))
+        # What the corners should look like
+        self.target_corners_colors = self.get_corners_colors(self.inline_target_colors)
+        # What the edges should look like
+        self.target_edges_colors = self.get_edges_colors(self.inline_target_colors)
 
-    def get_corners_colors(self):
-        pass
-    
-    def get_edges_colors(self):
-        pass
-
-    # Ask the user to enter the colors on each face
+        # Ask the user to enter the colors on each face
     def set_colors(self):
         self.now_colors = {}
         print("White face should be on top, and blue face towards the user")
@@ -92,11 +90,51 @@ class RubiksCube:
         # Keep in store the initial state
         self.now_colors = self.inline_colors(self.now_colors)
         self.initial_colors = self.now_colors
-    
+        self.now_numbers = self.find_cells()
+
+
     # Convert the faces colors into a unique string
     def inline_colors(self, color_dict):
         return "".join(color_dict[self.faces[i]] for i in [4, 1, 0, 2, 3, 5])
-    
+
+    def get_corners_colors(self, version):
+        corner_color = {}
+        for i in self.corners.keys():
+            corner_color[i] = list(version[j] for j in self.corners[i])
+        #print(corner_color)
+        return corner_color
+
+    def get_edges_colors(self, version):
+        edge_color = {}
+        for i in self.edges.keys():
+            edge_color[i] = list(version[j] for j in self.edges[i])
+        #print(edge_color)
+        return edge_color
+
+    # Find where the different cells are compared to the target configuration
+    def find_cells(self):
+        now_numbers = self.inline_target_numbers
+        # Get the colors of corners and edges at their current location
+        now_corners = self.get_corners_colors(self.now_colors)
+        now_edges = self.get_edges_colors(self.now_colors)
+        for i in self.corners.keys():
+            for j in self.corners.keys():
+            # Place the corner to its current position in the list
+                if sorted(now_corners[i]) == sorted(self.target_corners_colors[j]):
+                    for k in range(len(now_corners[i])):
+                        now_numbers[self.corners[j][k]] = self.corners[i][k]
+                    break
+
+        for i in self.edges.keys():
+            for j in self.edges.keys():
+            # Place the edge to its current position in the list
+                if sorted(now_edges[i]) == sorted(self.target_edges_colors[j]):
+                    for k in range(len(now_edges[i])):
+                        now_numbers[self.edges[j][k]] = self.edges[i][k]
+                    break
+        return now_numbers
+
+
     # Show the version of the cube we want (initial, target, now_colors)
     def show_cube(self, version):
         print(Cube(self.size, version))
@@ -136,6 +174,7 @@ class RubiksCube:
         
         # Apply the modifications
         self.now_colors = "".join(self.now_colors[i] for i in permutation)
+        self.now_numbers = list(self.now_numbers[i] for i in permutation)
 
     def rotate_counterclockwise(self, face):
         # A counterclockwise is simply 3 clockwise rotations
@@ -148,7 +187,9 @@ print("\nTarget:")
 cube1.show_cube(cube1.inline_target_colors)
 print("Initial state of the cube:")
 cube1.show_cube(cube1.initial_colors)
+print(cube1.now_numbers)
 cube1.rotate_clockwise("down")
 cube1.rotate_counterclockwise("front")
 print("Current state:")
 cube1.show_cube(cube1.now_colors)
+print(cube1.now_numbers)
