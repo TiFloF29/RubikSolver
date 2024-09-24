@@ -32,7 +32,14 @@ class RubiksCube:
             "down": "Y" * 9
         }
         # Name of the faces
-        self.faces = ["front", "right", "left", "back", "upper", "down"]
+        self.faces = {
+            "front": list(range(18,27)),
+            "right": list(range(9,18)),
+            "left": list(range(27,36)),
+            "back": list(range(36,45)),
+            "upper": list(range(0,9)),
+            "down": list(range(45,54))
+            }
         # Location of corners
         self.corners = {
             0: [0,9,38],
@@ -63,6 +70,8 @@ class RubiksCube:
         self.color_char = self.colors_map.keys()
         # List of colors
         self.existing_colors = list(self.colors_map.values())
+        # List of faces
+        self.faces_names = list(self.faces.keys())
         # Inline string for target_colors
         self.inline_target_colors = self.inline_colors(self.target_colors)
         # Inline facet index
@@ -78,12 +87,12 @@ class RubiksCube:
         print("White face should be on top, and blue face towards the user")
         print("Colors should be entered from top-left to bottom-right")
         print("With blue face towards you, flip the cube up and down to read upper and down faces")
-        for i in range(len(self.faces)):
+        for i in range(len(self.faces_names)):
             while True:
                 user_input = input(f"Enter face color when {self.existing_colors[i]} facet is in center: ").upper()
                 # Check if the number of inputs is correct, and if characters are in the list
                 if len(user_input) == self.face_facets and all(char in self.color_char for char in user_input):
-                    self.now_colors[self.faces[i]] = user_input
+                    self.now_colors[self.faces_names[i]] = user_input
                     break
                 else:
                     print(f"Only use characters from {self.color_char} on {self.face_facets} characters")
@@ -95,7 +104,7 @@ class RubiksCube:
 
     # Convert the faces colors into a unique string
     def inline_colors(self, color_dict):
-        return "".join(color_dict[self.faces[i]] for i in [4, 1, 0, 2, 3, 5])
+        return "".join(color_dict[self.faces_names[i]] for i in [4, 1, 0, 2, 3, 5])
 
     def get_corners_colors(self, version):
         corner_color = {}
