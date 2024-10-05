@@ -189,6 +189,19 @@ class RubiksCube:
         # A counterclockwise is simply 3 clockwise rotations
         for _ in range(3):
             self.rotate_clockwise(face)
+            
+    def white_cross(self):
+        """
+        First step of solving the Rubik's Cube
+        Create a white cross on the upper face
+        """
+        pass
+    
+    def first_face(self):
+        """
+        Second step: complete the white (upper) face
+        """
+        pass
 
 cube1 = RubiksCube()
 cube1.set_colors()
